@@ -1,4 +1,4 @@
-const currentTime = document.querySelector("h1"),
+/*const currentTime = document.querySelector("h1"),
 content = document.querySelector(".content"),
 selectMenu = document.querySelectorAll("select"),
 setAlarmBtn = document.querySelector("button");
@@ -32,7 +32,85 @@ function options() {
         let ampm = i == 1 ? "AM" : "PM";
         let option = `<option value="${ampm}">${ampm}</option>`;
         selectMenu[2].firstElementChild.insertAdjacentHTML("afterend", option);
-    }
+    }*/
+const currentTime = document.querySelector("h1");
+const content = document.querySelector(".content");
+const selectMenu = document.getElementsByTagName("select");
+const setAlarmBtn = document.querySelector("button");
+
+// Alarm tune
+let alarmTime;
+let isAlarmSet;
+let ringtone;
+
+try {
+  ringtone = new Audio("./files/ringtone.mp3");
+} catch (err) {
+  console.error("Failed to load ringtone:", err);
+}
+
+// Initialize the select menus with options
+function initializeSelectMenus() {
+  // Hour options
+  selectMenu[0].innerHTML = `<option value="Hour" selected disabled hidden>Hour</option>`;
+  for (let i = 12; i > 0; i--) {
+    i = i < 10 ? `0${i}` : i;
+    let option = `<option value="${i}">${i}</option>`;
+    selectMenu[0].firstElementChild.insertAdjacentHTML("afterend", option);
+  }
+
+  // Minute options
+  selectMenu[1].innerHTML = `<option value="Minute" selected disabled hidden>Minute</option>`;
+  for (let i = 59; i >= 0; i--) {
+    i = i < 10 ? `0${i}` : i;
+    let option = `<option value="${i}">${i}</option>`;
+    selectMenu[1].firstElementChild.insertAdjacentHTML("afterend", option);
+  }
+
+  // AM/PM options
+  selectMenu[2].innerHTML = `<option value="AM/PM" selected disabled hidden>AM/PM</option>`;
+  let ampmOptions = ["AM", "PM"];
+  for (let i = 0; i < ampmOptions.length; i++) {
+    let option = `<option value="${ampmOptions[i]}">${ampmOptions[i]}</option>`;
+    selectMenu[2].firstElementChild.insertAdjacentHTML("afterend", option);
+  }
+}
+
+initializeSelectMenus();
+
+// Update the current time every second
+setInterval(() => {
+  let date = new Date();
+  let h = date.getHours();
+  let m = date.getMinutes();
+  let s = date.getSeconds();
+  let ampm = "AM";
+
+  if (h >= 12) {
+    h = h - 12;
+    ampm = "PM";
+  }
+
+  h = h === 0 ? 12 : h;
+  h = h < 10 ? "0" + h : h;
+  m = m < 10 ? "0" + m : m;
+  s = s < 10 ? "0" + s : s;
+
+  currentTime.textContent = `${h}:${m}:${s} ${ampm}`;
+
+  if (alarmTime === `${h}:${m} ${ampm}`) {
+    ringtone.play();
+    ringtone.loop = true;
+  }
+});
+
+// Set or clear the alarm
+function setAlarm() {
+  if (isAlarmSet) {
+    alarmTime = "";
+    ringtone.pause();
+    content.classList.remove
+
 }
 options();
 
